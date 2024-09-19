@@ -31,4 +31,18 @@ jobs:
           git reset --hard origin/develop
           git push origin staging --force
 
+      - name: Add comment to PR with previous commit ID
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prevCommit = '${{ steps.get_prev_commit.outputs.prev_commit }}';
+            const prNumber = context.payload.pull_request.number;
+            const commentBody = `The previous commit ID of the staging branch was: \`${prevCommit}\`. The staging branch has been reset to \`develop\`.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: commentBody,
+            });
 
