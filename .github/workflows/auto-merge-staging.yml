@@ -25,6 +25,13 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
+      - name: Get previous staging commit ID
+        id: get_prev_commit
+        run: |
+          PREV_COMMIT=$(git rev-parse HEAD)
+          echo "Previous staging commit ID: $PREV_COMMIT"
+          echo "::set-output name=prev_commit::$PREV_COMMIT"
+
       - name: Reset staging to develop
         run: |
           git fetch origin develop
@@ -45,4 +52,5 @@ jobs:
               issue_number: prNumber,
               body: commentBody,
             });
+
 
